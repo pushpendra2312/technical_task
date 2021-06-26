@@ -1,48 +1,41 @@
 import React, { useEffect, useState } from 'react'
 import { getApiCall } from '../../api/ApiCall';
 import { MAIN_URL } from '../../api/ApiRoutes';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Avatar from '@material-ui/core/Avatar';
+import CustomerTable from '../CustomerTable/CustomerTable';
+import CustomerPagination from '../Pagination/Pagination';
 
-const useStyles = makeStyles({
-    table: {
-        minWidth: 650,
-    },
-});
-
-
-
+export const CustomerContext = React.createContext(null);
+export const PaginationContext = React.createContext(null);
 
 const CustomersDetails = () => {
-
     const [customersData, setCustomersData] = useState([]);
-    const classes = useStyles();
     const [toggleBid, setToggleBid] = useState(false);
-    const fetchCustomerDetails = async () => {
+    const [toggleSort, setToggleSort] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [customersDataPerPage] = useState(4);
 
+    const indexOfLastPage = currentPage * customersDataPerPage;
+    const indexOfFirstPage = indexOfLastPage - customersDataPerPage;
+    const currentCustomerData = customersData.slice(indexOfFirstPage, indexOfLastPage);
+
+    const handleChange = (event, value) => {
+        event.preventDefault();
+        setCurrentPage(value);
+    };
+    const fetchCustomerDetails = async () => {
         const response = await getApiCall(MAIN_URL);
         console.log(response)
         setCustomersData(response)
     }
 
     useEffect(() => {
-
         fetchCustomerDetails();
-
     }, [])
 
     const getBidAmount = (row) => {
-        let maxBid
+        let maxBid;
 
         if (row.bids.length === 0) {
-
             return 0;
         } else {
 
@@ -61,43 +54,21 @@ const CustomersDetails = () => {
         return maxBid;
     }
 
+    const sortCustomerBids = () => {
+        setToggleSort(!toggleSort);
+    }
 
     return (
-        <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="simple table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Customer Name</TableCell>
-                        <TableCell align="left">Email</TableCell>
-                        <TableCell align="left">Phone</TableCell>
-                        <TableCell align="left">Premium</TableCell>
-                        <TableCell align="left">Bid <button onClick={() => setToggleBid(!toggleBid)}>{toggleBid ? "MAX" : "MIN"}</button></TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {customersData.map((row) => {
+        <>
+            <CustomerContext.Provider value={{ currentCustomerData, getBidAmount, setToggleBid, sortCustomerBids, toggleBid, toggleSort }}>
+                <CustomerTable />
+            </CustomerContext.Provider>
 
-
-                        return (<TableRow key={row.id}>
-                            <TableCell align="left">
-                                {`${row.firstname} ${row.lastname}`}
-                                <Avatar src={row.avatarUrl}></Avatar>
-                            </TableCell>
-                            <TableCell align="left">{row.email}</TableCell>
-                            <TableCell align="left">{row.phone}</TableCell>
-                            <TableCell align="left">{row.hasPremium ? "True" : "False"}</TableCell>
-                            <TableCell align="left">{getBidAmount(row)}</TableCell>
-                        </TableRow>)
-                    })}
-                </TableBody>
-            </Table>
-        </TableContainer>
+            <PaginationContext.Provider value={{ currentPage, customersData, customersDataPerPage, handleChange }}>
+                <CustomerPagination />
+            </PaginationContext.Provider>
+        </>
     );
 }
 
-
 export default CustomersDetails;
-
-
-
-
