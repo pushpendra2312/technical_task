@@ -24,7 +24,7 @@ const CustomersDetails = () => {
 
     const [customersData, setCustomersData] = useState([]);
     const classes = useStyles();
-
+    const [toggleBid, setToggleBid] = useState(false);
     const fetchCustomerDetails = async () => {
 
         const response = await getApiCall(MAIN_URL);
@@ -39,15 +39,28 @@ const CustomersDetails = () => {
     }, [])
 
     const getBidAmount = (row) => {
+        let maxBid
 
-        let maxBid = Math.max(...row.bids.map((bid) => {
+        if (row.bids.length === 0) {
 
-            return bid.amount;
+            return 0;
+        } else {
 
-        }))
+            if (toggleBid) {
 
-        return maxBid > 0 ? maxBid : 0;
+                maxBid = Math.min(...row.bids.map((bid) => {
+                    return bid.amount;
+                }));
+            } else {
+
+                maxBid = Math.max(...row.bids.map((bid) => {
+                    return bid.amount;
+                }));
+            }
+        }
+        return maxBid;
     }
+
 
     return (
         <TableContainer component={Paper}>
@@ -58,7 +71,7 @@ const CustomersDetails = () => {
                         <TableCell align="left">Email</TableCell>
                         <TableCell align="left">Phone</TableCell>
                         <TableCell align="left">Premium</TableCell>
-                        <TableCell align="left">Bid</TableCell>
+                        <TableCell align="left">Bid <button onClick={() => setToggleBid(!toggleBid)}>{toggleBid ? "MAX" : "MIN"}</button></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
