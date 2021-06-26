@@ -12,7 +12,7 @@ const CustomersDetails = () => {
     const [toggleBid, setToggleBid] = useState(false);
     const [toggleSort, setToggleSort] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [customersDataPerPage] = useState(4);
+    const [customersDataPerPage] = useState(7);
 
     const indexOfLastPage = currentPage * customersDataPerPage;
     const indexOfFirstPage = indexOfLastPage - customersDataPerPage;
@@ -23,8 +23,15 @@ const CustomersDetails = () => {
         setCurrentPage(value);
     };
     const fetchCustomerDetails = async () => {
-        const response = await getApiCall(MAIN_URL);
-        console.log(response)
+        let response = await getApiCall(MAIN_URL);
+
+        response = response.map((customer) => {
+            customer.bidValue = Math.max(...customer.bids.map((bid) => {
+                return bid.amount;
+            }));
+            return customer;
+        });
+
         setCustomersData(response)
     }
 
@@ -51,11 +58,26 @@ const CustomersDetails = () => {
                 }));
             }
         }
+        row.bidValue = maxBid;
         return maxBid;
     }
 
+
+
     const sortCustomerBids = () => {
+
         setToggleSort(!toggleSort);
+        const customersDataCopy = [...customersData];
+        let copy;
+        if (toggleSort) {
+
+            copy = customersDataCopy.sort((a, b) => b.bidValue - a.bidValue);
+        } else {
+
+            copy = customersDataCopy.sort((a, b) => a.bidValue - b.bidValue);
+        }
+
+        setCustomersData(copy);
     }
 
     return (

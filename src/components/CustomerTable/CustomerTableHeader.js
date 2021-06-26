@@ -13,7 +13,7 @@ const CustomerTableHeader = () => {
                 <TableCell align="left">Email</TableCell>
                 <TableCell align="left">Phone</TableCell>
                 <TableCell align="left">Premium</TableCell>
-                <TableCell align="left">Bid <button onClick={() => setToggleBid(!toggleBid)}>{toggleBid ? "MAX" : "MIN"}</button></TableCell>
+                <TableCell align="left">Bid <button onClick={() => setToggleBid(!toggleBid)}>{toggleBid ? "MIN" : "MAX"}</button></TableCell>
                 <TableCell align="left">Sort <button onClick={() => sortCustomerBids()}>{toggleSort ? "ASC" : "DSC"}</button></TableCell>
             </TableRow>
         </TableHead>

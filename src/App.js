@@ -5,7 +5,7 @@ const App = function () {
   return (
     <Switch>
       <Route path="/" component={CustomersDetails} exact />
-      <Route path="bidPage/:id" component={CustomerBidDetails} exact />
+      <Route path="/bidPage/:id" component={CustomerBidDetails} />
     </Switch>
   );
 }
