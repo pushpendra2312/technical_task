@@ -1,11 +1,12 @@
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
+import CustomersDetails from "./components/CustomerDetails/CustomersDetails";
+import { Route, Switch } from "react-router";
+import CustomerBidDetails from "./components/CustomerDetails/CustomerBidDetails/CustomerBidDetails";
+const App = function () {
   return (
-    <div className="App">
-      Hello World
-    </div>
+    <Switch>
+      <Route path="/" component={CustomersDetails} exact />
+      <Route path="bidPage/:id" component={CustomerBidDetails} exact />
+    </Switch>
   );
 }
 
