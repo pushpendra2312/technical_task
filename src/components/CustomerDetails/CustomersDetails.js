@@ -59,20 +59,7 @@ const CustomersDetails = () => {
 
         type === 'MAX' ? setToggleMinOrMax('MIN') : setToggleMinOrMax('MAX');
     }
-    const sortCustomerBids = (sortType) => {
 
-
-        const customersDataCopy = [...customersData];
-        let copy;
-        if (sortType === 'DSC') {
-
-            copy = customersDataCopy.sort((a, b) => b.bidValue - a.bidValue);
-        } else {
-
-            copy = customersDataCopy.sort((a, b) => a.bidValue - b.bidValue);
-        }
-        setCustomersData(copy);
-    }
 
     const sortCustomers = (sortType) => {
 
@@ -165,7 +152,7 @@ const CustomersDetails = () => {
     return (
         <>
             <div><h1>Bidding List</h1></div>
-            <CustomerContext.Provider value={{ currentCustomerData, sortCustomerBids, toggleMinOrMax, checkToggleMinOrMax, showMaxOrMinBids, sortCustomers }}>
+            <CustomerContext.Provider value={{ currentCustomerData, toggleMinOrMax, checkToggleMinOrMax, showMaxOrMinBids, sortCustomers }}>
                 <CustomerTable />
             </CustomerContext.Provider>
 
