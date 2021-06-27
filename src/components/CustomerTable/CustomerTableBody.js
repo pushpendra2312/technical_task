@@ -8,13 +8,11 @@ import Links from '@material-ui/core/Link';
 import { CustomerContext } from '../CustomerDetails/CustomersDetails';
 
 const CustomerTableBody = () => {
-    const { currentCustomerData, getBidAmount, sortCustomerBids } = useContext(CustomerContext);
-
+    const { currentCustomerData, showMaxOrMinBids } = useContext(CustomerContext);
 
     return (
         <TableBody>
-            {currentCustomerData.sort(sortCustomerBids).map((row) => {
-
+            {currentCustomerData.map((row) => {
                 return (
                     <TableRow key={row.id}>
                         <TableCell align="left">
@@ -24,11 +22,10 @@ const CustomerTableBody = () => {
                         <TableCell align="left">{row.email}</TableCell>
                         <TableCell align="left">{row.phone}</TableCell>
                         <TableCell align="left">{row.hasPremium ? "True" : "False"}</TableCell>
-                        <TableCell align="left">{getBidAmount(row)}</TableCell>
+                        <TableCell align="left">{showMaxOrMinBids(row)}</TableCell>
                         <TableCell><Link to={`bidPage/${row.id}`} style={{ textDecoration: 'none' }}> <Links color="textSecondary" underline='hover' >Bid Details...</Links></Link></TableCell>
                     </TableRow>)
-            })
-            }
+            })}
         </TableBody>
     );
 }

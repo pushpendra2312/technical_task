@@ -9,15 +9,13 @@ export const PaginationContext = React.createContext(null);
 
 const CustomersDetails = () => {
     const [customersData, setCustomersData] = useState([]);
-    const [toggleBid, setToggleBid] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [customersDataPerPage] = useState(7);
-    const [sortOrder, setSortOrder] = useState('ASC')
+    const [toggleMinOrMax, setToggleMinOrMax] = useState('MAX');
     const indexOfLastPage = currentPage * customersDataPerPage;
     const indexOfFirstPage = indexOfLastPage - customersDataPerPage;
-    const currentCustomerData = [...customersData].slice(indexOfFirstPage, indexOfLastPage);
+    const currentCustomerData = customersData.slice(indexOfFirstPage, indexOfLastPage);
 
-    console.log(currentCustomerData, 'page');
     const handleChange = (event, value) => {
         event.preventDefault();
         setCurrentPage(value);
@@ -26,58 +24,148 @@ const CustomersDetails = () => {
         let response = await getApiCall(MAIN_URL);
 
         response = response.map((customer) => {
-            customer.bidValue = Math.max(...customer.bids.map((bid) => {
-                return bid.amount;
-            }));
+            customer.bids = customer.bids.sort((bidA, bidB) => {
+                return bidB.amount - bidA.amount;
+            });
             return customer;
         });
-        setCustomersData(response)
+        setCustomersData(response);
     }
 
     useEffect(() => {
         fetchCustomerDetails();
     }, [])
 
-    const getBidAmount = (row) => {
-        let maxBid;
+
+
+    const showMaxOrMinBids = (row) => {
 
         if (row.bids.length === 0) {
+
             return 0;
         } else {
 
-            if (toggleBid) {
+            if (toggleMinOrMax === 'MIN') {
 
-                maxBid = Math.min(...row.bids.map((bid) => {
-                    return bid.amount;
-                }));
-            } else {
+                return row.bids[row.bids.length - 1].amount;
+            } else if (toggleMinOrMax === 'MAX') {
 
-                maxBid = Math.max(...row.bids.map((bid) => {
-                    return bid.amount;
-                }));
+                return row.bids[0].amount;
+            }
+        }
+    }
+
+    const checkToggleMinOrMax = (type) => {
+
+        type === 'MAX' ? setToggleMinOrMax('MIN') : setToggleMinOrMax('MAX');
+    }
+    const sortCustomerBids = (sortType) => {
+
+
+        const customersDataCopy = [...customersData];
+        let copy;
+        if (sortType === 'DSC') {
+
+            copy = customersDataCopy.sort((a, b) => b.bidValue - a.bidValue);
+        } else {
+
+            copy = customersDataCopy.sort((a, b) => a.bidValue - b.bidValue);
+        }
+        setCustomersData(copy);
+    }
+
+    const sortCustomers = (sortType) => {
+
+        const copy = [...customersData];
+        let sortedCustomersData;
+        if (sortType === 'ASC') {
+
+            if (toggleMinOrMax === 'MAX') {
+
+                sortedCustomersData = copy.sort((customerA, customerB) => {
+
+                    if (customerA.bids.length > 0 && customerB.bids.length > 0)
+                        return customerA.bids[0].amount - customerB.bids[0].amount;
+                    else {
+
+                        if (customerB.bids.length === 0) {
+
+                            return 1;
+                        } else {
+
+                            return -1;
+                        }
+                    }
+
+                })
+
+            } else if (toggleMinOrMax === 'MIN') {
+
+                sortedCustomersData = copy.sort((customerA, customerB) => {
+                    if (customerA.bids.length > 0 && customerB.bids.length > 0)
+                        return customerA.bids[customerA.bids.length - 1].amount - customerB.bids[customerB.bids.length - 1].amount;
+                    else {
+
+                        if (customerB.bids.length === 0) {
+
+                            return 1;
+                        } else {
+
+                            return -1;
+                        }
+                    }
+                })
+
+            }
+
+        } else if (sortType === 'DES') {
+
+            if (toggleMinOrMax === 'MAX') {
+
+                sortedCustomersData = copy.sort((customerA, customerB) => {
+
+                    if (customerA.bids.length > 0 && customerB.bids.length > 0)
+                        return customerB.bids[0].amount - customerA.bids[0].amount;
+                    else {
+
+                        if (customerA.bids.length === 0) {
+
+                            return 1;
+                        } else {
+
+                            return -1;
+                        }
+                    }
+
+                })
+
+            } else if (toggleMinOrMax === 'MIN') {
+
+                sortedCustomersData = copy.sort((customerA, customerB) => {
+                    if (customerA.bids.length > 0 && customerB.bids.length > 0)
+                        return customerB.bids[customerB.bids.length - 1].amount - customerA.bids[customerA.bids.length - 1].amount;
+                    else {
+
+                        if (customerA.bids.length === 0) {
+
+                            return 1;
+                        } else {
+
+                            return -1;
+                        }
+                    }
+                })
+
             }
         }
 
-        row.bidValue = maxBid;
-        return row.bidValue;
-    }
 
-
-    const sortCustomerBids = (customerA, customerB) => {
-
-        if (sortOrder === 'DES') {
-
-            return customerB.bidValue - customerA.bidValue;
-        }
-        else if (sortOrder === 'ASC') {
-
-            return customerA.bidValue - customerB.bidValue;
-        }
+        setCustomersData(sortedCustomersData);
     }
     return (
         <>
             <div><h1>Bidding List</h1></div>
-            <CustomerContext.Provider value={{ currentCustomerData, getBidAmount, setToggleBid, sortCustomerBids, toggleBid, setSortOrder }}>
+            <CustomerContext.Provider value={{ currentCustomerData, sortCustomerBids, toggleMinOrMax, checkToggleMinOrMax, showMaxOrMinBids, sortCustomers }}>
                 <CustomerTable />
             </CustomerContext.Provider>
 
