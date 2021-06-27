@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import { CustomerContext } from '../CustomerDetails/CustomersDetails';
 
 const CustomerTableHeader = () => {
-    const { setToggleBid, sortCustomerBids, toggleBid } = useContext(CustomerContext);
+    const { setToggleBid, toggleBid, setSortOrder } = useContext(CustomerContext);
     return (
         <TableHead>
             <TableRow>
@@ -15,7 +15,7 @@ const CustomerTableHeader = () => {
                 <TableCell align="left">Phone</TableCell>
                 <TableCell align="left">Premium</TableCell>
                 <TableCell align="left">Bid <Button color="secondary" onClick={() => setToggleBid(!toggleBid)}>{toggleBid ? "MIN" : "MAX"}</Button></TableCell>
-                <TableCell align="left">Sort <Button color="secondary" onClick={() => sortCustomerBids('ASC')}>ASC</Button><Button color="secondary" onClick={() => sortCustomerBids('DSC')}>DSC</Button></TableCell>
+                <TableCell align="left">Sort <Button color="secondary" onClick={() => setSortOrder('ASC')}>ASC</Button><Button color="secondary" onClick={() => setSortOrder('DES')}>DES</Button></TableCell>
             </TableRow>
         </TableHead>
     );

@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
         width: theme.spacing(18),
         height: theme.spacing(18)
 
-    }
+    },
 
 }));
 
@@ -44,7 +44,7 @@ function CustomerBidDetails() {
     const classes = useStyles();
     return (
         <div div className={classes.root}>
-            <Button onClick={() => { history.goBack() }}> BAck</Button>
+            <Button onClick={() => { history.goBack() }}> Back</Button>
             <h1>
                 {`${customer.firstname} ${customer.lastname}`}
             </h1>

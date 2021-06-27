@@ -8,12 +8,13 @@ import Links from '@material-ui/core/Link';
 import { CustomerContext } from '../CustomerDetails/CustomersDetails';
 
 const CustomerTableBody = () => {
-    const { currentCustomerData, getBidAmount } = useContext(CustomerContext);
+    const { currentCustomerData, getBidAmount, sortCustomerBids } = useContext(CustomerContext);
 
 
     return (
         <TableBody>
-            {currentCustomerData.map((row) => {
+            {currentCustomerData.sort(sortCustomerBids).map((row) => {
+
                 return (
                     <TableRow key={row.id}>
                         <TableCell align="left">
@@ -26,7 +27,8 @@ const CustomerTableBody = () => {
                         <TableCell align="left">{getBidAmount(row)}</TableCell>
                         <TableCell><Link to={`bidPage/${row.id}`} style={{ textDecoration: 'none' }}> <Links color="textSecondary" underline='hover' >Bid Details...</Links></Link></TableCell>
                     </TableRow>)
-            })}
+            })
+            }
         </TableBody>
     );
 }

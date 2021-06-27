@@ -12,11 +12,12 @@ const CustomersDetails = () => {
     const [toggleBid, setToggleBid] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [customersDataPerPage] = useState(7);
-
+    const [sortOrder, setSortOrder] = useState('ASC')
     const indexOfLastPage = currentPage * customersDataPerPage;
     const indexOfFirstPage = indexOfLastPage - customersDataPerPage;
-    const currentCustomerData = customersData.slice(indexOfFirstPage, indexOfLastPage);
+    const currentCustomerData = [...customersData].slice(indexOfFirstPage, indexOfLastPage);
 
+    console.log(currentCustomerData, 'page');
     const handleChange = (event, value) => {
         event.preventDefault();
         setCurrentPage(value);
@@ -30,7 +31,6 @@ const CustomersDetails = () => {
             }));
             return customer;
         });
-
         setCustomersData(response)
     }
 
@@ -57,31 +57,27 @@ const CustomersDetails = () => {
                 }));
             }
         }
+
         row.bidValue = maxBid;
-        return maxBid;
+        return row.bidValue;
     }
 
 
+    const sortCustomerBids = (customerA, customerB) => {
 
-    const sortCustomerBids = (sortType) => {
+        if (sortOrder === 'DES') {
 
-
-        const customersDataCopy = [...customersData];
-        let copy;
-        if (sortType === 'DSC') {
-
-            copy = customersDataCopy.sort((a, b) => b.bidValue - a.bidValue);
-        } else {
-
-            copy = customersDataCopy.sort((a, b) => a.bidValue - b.bidValue);
+            return customerB.bidValue - customerA.bidValue;
         }
-        setCustomersData(copy);
-    }
+        else if (sortOrder === 'ASC') {
 
+            return customerA.bidValue - customerB.bidValue;
+        }
+    }
     return (
         <>
             <div><h1>Bidding List</h1></div>
-            <CustomerContext.Provider value={{ currentCustomerData, getBidAmount, setToggleBid, sortCustomerBids, toggleBid }}>
+            <CustomerContext.Provider value={{ currentCustomerData, getBidAmount, setToggleBid, sortCustomerBids, toggleBid, setSortOrder }}>
                 <CustomerTable />
             </CustomerContext.Provider>
 
