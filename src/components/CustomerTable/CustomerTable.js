@@ -16,7 +16,7 @@ const CustomerTable = () => {
     const classes = useStyles();
     return (
         <>
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} elevation={8}>
                 <Table className={classes.table} aria-label="simple table">
                     <CustomerTableHeader />
                     <CustomerTableBody />

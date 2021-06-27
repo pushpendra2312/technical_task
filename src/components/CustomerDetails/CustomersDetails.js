@@ -10,7 +10,6 @@ export const PaginationContext = React.createContext(null);
 const CustomersDetails = () => {
     const [customersData, setCustomersData] = useState([]);
     const [toggleBid, setToggleBid] = useState(false);
-    const [toggleSort, setToggleSort] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [customersDataPerPage] = useState(7);
 
@@ -64,25 +63,25 @@ const CustomersDetails = () => {
 
 
 
-    const sortCustomerBids = () => {
+    const sortCustomerBids = (sortType) => {
 
-        setToggleSort(!toggleSort);
+
         const customersDataCopy = [...customersData];
         let copy;
-        if (toggleSort) {
+        if (sortType === 'DSC') {
 
             copy = customersDataCopy.sort((a, b) => b.bidValue - a.bidValue);
         } else {
 
             copy = customersDataCopy.sort((a, b) => a.bidValue - b.bidValue);
         }
-
         setCustomersData(copy);
     }
 
     return (
         <>
-            <CustomerContext.Provider value={{ currentCustomerData, getBidAmount, setToggleBid, sortCustomerBids, toggleBid, toggleSort }}>
+            <div><h1>Bidding List</h1></div>
+            <CustomerContext.Provider value={{ currentCustomerData, getBidAmount, setToggleBid, sortCustomerBids, toggleBid }}>
                 <CustomerTable />
             </CustomerContext.Provider>
 
